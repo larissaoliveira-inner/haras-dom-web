@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Haras Dom</title>
+<link rel="icon" href="imgs/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"><style>
+html,body{margin:0;padding:0;background:#0E0D0C;}
+html{scroll-behavior:smooth;}
+*{box-sizing:border-box;}
+a{color:inherit;text-decoration:none;}
+a:hover{color:#C9A27A;}
+
+.page{font-family:'Jost',sans-serif;color:#EDE8DF;background:#0E0D0C;overflow-x:hidden;}
+.caps{font-size:12px;letter-spacing:.28em;text-transform:uppercase;}
+.serif{margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;letter-spacing:-.01em;}
+
+/* Hero + opening animation (phases p1..p4 are added to .hero in sequence) */
+.hero{position:relative;height:100vh;min-height:620px;background:#0E0D0C;overflow:hidden;}
+.hero.instant, .hero.instant *{transition:none !important;}
+.hero-video{
+  position:absolute;top:0;bottom:0;left:50%;right:auto;
+  height:100%;width:auto;aspect-ratio:9/16;object-fit:cover;
+  filter:grayscale(1) contrast(1.08);
+  opacity:0;transform:translateX(-50%) scale(1.14);
+  transition:opacity 2.2s ease, transform 7s cubic-bezier(.2,.7,.2,1);
+  -webkit-mask-image:linear-gradient(to right,transparent 0%,#000 25%,#000 75%,transparent 100%);
+  mask-image:linear-gradient(to right,transparent 0%,#000 25%,#000 75%,transparent 100%);
+}
+.hero.p3 .hero-video{opacity:.62;transform:translateX(-50%) scale(1);}
+
+/* No celular (tela vertical), o vídeo vertical preenche tudo, sem fade */
+@media (max-aspect-ratio: 3/4){
+  .hero-video{left:0;width:100%;transform:scale(1.14);-webkit-mask-image:none;mask-image:none;}
+  .hero.p3 .hero-video{transform:scale(1);}
+}
+.hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,13,12,.55) 0%,rgba(14,13,12,0) 30%,rgba(14,13,12,0) 55%,rgba(14,13,12,.85) 100%);pointer-events:none;}
+
+.hero-nav{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:34px 4vw;z-index:3;opacity:0;pointer-events:none;transition:opacity 1.2s ease;}
+.hero-nav div{display:flex;gap:36px;}
+.hero.p4 .hero-nav{opacity:1;pointer-events:auto;}
+
+.logo{position:absolute;left:50%;top:50%;width:min(62vw,460px);aspect-ratio:316/228;transform:translate(-50%,-50%) scale(1);transform-origin:top center;z-index:4;transition:top 1.6s cubic-bezier(.7,0,.2,1), transform 1.6s cubic-bezier(.7,0,.2,1);}
+.hero.p3 .logo{top:26px;transform:translate(-50%,0) scale(.2);}
+.logo img{position:absolute;inset:0;width:100%;height:100%;}
+.logo .mono{clip-path:inset(0 100% 19% 0);transition:clip-path 2.1s cubic-bezier(.7,0,.2,1);}
+.hero.p1 .logo .mono{clip-path:inset(0 0 19% 0);}
+.logo .word{clip-path:inset(81% 50% 0 50%);transition:clip-path 1.3s cubic-bezier(.7,0,.2,1);}
+.hero.p2 .logo .word{clip-path:inset(81% 0 0 0);}
+.logo .pen{position:absolute;top:-4%;height:80%;width:1px;background:#EDE8DF;left:0;opacity:0;transition:left 2.1s cubic-bezier(.7,0,.2,1), opacity .5s ease;}
+.hero.p1 .logo .pen{left:100%;opacity:1;}
+.hero.p2 .logo .pen{opacity:0;}
+
+/* Estrutura */
+.estrutura{background:#F3EFE7;color:#161412;padding:clamp(88px,10vw,160px) 0 clamp(40px,5vw,64px);display:flex;flex-direction:column;gap:32px;}
+.estrutura .sec-head h2{font-size:clamp(36px,4.2vw,68px);}
+.sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;}
+.sec-head h2{font-size:clamp(44px,6vw,96px);line-height:.9;}
+.strip{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;cursor:grab;}
+.strip::-webkit-scrollbar{display:none;}
+.strip.dragging{cursor:grabbing;user-select:none;}
+.strip.dragging img{pointer-events:none;}
+.track{display:flex;width:max-content;}
+.strip figure{margin:0 14px 0 0;flex:0 0 auto;height:min(64vh,620px);display:flex;flex-direction:column;gap:12px;cursor:zoom-in;}
+.strip img{height:100%;min-height:0;width:auto;display:block;}
+.strip figcaption{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#5E5850;}
+
+/* Galeria */
+.galeria{background:#0E0D0C;padding:clamp(56px,7vw,96px) 4vw;display:flex;flex-direction:column;gap:32px;}
+.hint{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#A39C91;}
+/* Every column has the same total height, so the top and bottom edges line up.
+   Each photo's --s is its share of the column (all columns add up to 16). */
+.mosaic{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;}
+.mosaic .col{display:flex;flex-direction:column;gap:14px;aspect-ratio:1/4;}
+.mosaic button{flex:var(--s) 1 0;min-height:0;padding:0;border:none;background:#1A1816;cursor:zoom-in;overflow:hidden;display:block;width:100%;}
+.mosaic img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.4s cubic-bezier(.2,.7,.2,1);}
+.mosaic button:hover img{transform:scale(1.05);}
+@media (max-width:900px){ .mosaic{grid-template-columns:repeat(2,minmax(0,1fr));} }
+
+/* Contato */
+.contato{background:#0E0D0C;padding:clamp(40px,6vw,80px) 4vw 36px;display:flex;flex-direction:column;gap:56px;border-top:1px solid rgba(237,232,223,.18);}
+.contato h2{font-size:clamp(44px,6vw,104px);line-height:.95;max-width:10ch;}
+.cta{display:flex;flex-wrap:wrap;gap:14px;}
+.cta a{border:1px solid rgba(237,232,223,.4);padding:16px 26px;}
+.cta a:first-child{border-color:#EDE8DF;}
+.cta a:hover{background:#EDE8DF;color:#0E0D0C;}
+.foot-meta{display:flex;flex-wrap:wrap;gap:28px;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#A39C91;}
+
+/* Lightbox */
+.lightbox{position:fixed;inset:0;z-index:50;background:rgba(10,9,8,.96);display:none;align-items:center;justify-content:center;padding:5vh 5vw;cursor:zoom-out;}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:100%;max-height:100%;object-fit:contain;display:block;}
+.lightbox span{position:absolute;top:28px;right:4vw;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#C9C2B6;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<section class="hero instant" id="hero">
+  <video class="hero-video" src="imgs/My%20Movie%2021%20(1).mp4" autoplay muted loop playsinline></video>
+  <div class="hero-shade"></div>
+
+  <nav class="hero-nav caps">
+    <div>
+      <a href="#estrutura">Estrutura</a>
+      <a href="#galeria">Galeria</a>
+    </div>
+    <div>
+      <a href="#contato">Contato</a>
+    </div>
+  </nav>
+
+  <div class="logo">
+    <img class="mono" src="imgs/logo-light.png" alt="Haras Dom">
+    <img class="word" src="imgs/logo-light.png" alt="">
+    <div class="pen"></div>
+  </div>
+
+</section>
+
+<section id="estrutura" class="estrutura">
+  <div class="sec-head" style="padding:0 4vw;">
+    <h2 class="serif"><em>Estrutura</em></h2>
+  </div>
+  <div class="strip" id="strip">
+    <div class="track" id="track">
+      <figure>
+        <img src="imgs/espaco4.png" alt="Corredor das baias à noite">
+        <figcaption>Baias</figcaption>
+      </figure>
+      <figure>
+        <img src="imgs/espaco.png" alt="Lounge sob o pergolado">
+        <figcaption>Convivência</figcaption>
+      </figure>
+      <figure>
+        <img src="imgs/espaco5.png" alt="Cavalos no palanque">
+        <figcaption>Palanque</figcaption>
+      </figure>
+      <figure>
+        <img src="imgs/espaco7.png" alt="Cocheiras iluminadas ao anoitecer">
+        <figcaption>Cocheiras</figcaption>
+      </figure>
+      <figure>
+        <img src="imgs/espaco3.png" alt="Portas das baias com flores">
+        <figcaption>Jardins</figcaption>
+      </figure>
+      <figure>
+        <img src="imgs/espaco6.png" alt="Mesa comunitária na varanda coberta">
+        <figcaption>Varanda</figcaption>
+      </figure>
+      <figure>
+        <img src="imgs/espaco1.png" alt="Lounge com vista para os piquetes">
+        <figcaption>Vista</figcaption>
+      </figure>
+      <figure>
+        <img src="imgs/espaco2.png" alt="Lounge ao entardecer">
+        <figcaption>Entardecer</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="galeria" class="galeria">
+  <div class="sec-head">
+    <h2 class="serif"><em>Galeria</em></h2>
+    <span class="hint">Clique para ampliar</span>
+  </div>
+  <div class="mosaic">
+    <div class="col">
+      <button style="--s:5"><img src="imgs/horse1.png" alt="Retrato com bridão HD" loading="lazy"></button>
+      <button style="--s:3"><img src="imgs/horse7.png" alt="Cavalo encilhado com manta Haras Dom" loading="lazy"></button>
+      <button style="--s:4"><img src="imgs/horse.png" alt="Cavalo na porta da baia" loading="lazy"></button>
+      <button style="--s:4"><img src="imgs/horse3.png" alt="Amazona em prova com manta Haras Dom" loading="lazy"></button>
+    </div>
+    <div class="col">
+      <button style="--s:6"><img src="imgs/horse12.png" alt="Friesian com cabeçada Haras Dom" loading="lazy"></button>
+      <button style="--s:3"><img src="imgs/horse2.png" alt="Banho de cavalo Friesian" loading="lazy"></button>
+      <button style="--s:7"><img src="imgs/horse11.png" alt="Amazona montada vista do alto" loading="lazy"></button>
+    </div>
+    <div class="col">
+      <button style="--s:5"><img src="imgs/horse9.png" alt="Cavalo com orelheira Haras Dom" loading="lazy"></button>
+      <button style="--s:4"><img src="imgs/horse6.png" alt="Salto em competição" loading="lazy"></button>
+      <button style="--s:3"><img src="imgs/horse4.png" alt="Amazona abraçando o cavalo após a prova" loading="lazy"></button>
+      <button style="--s:4"><img src="imgs/horse5.png" alt="Sela e manta Haras Dom" loading="lazy"></button>
+    </div>
+    <div class="col">
+      <button style="--s:6"><img src="imgs/owner.png" alt="Amazona com seu cavalo" loading="lazy"></button>
+      <button style="--s:5"><img src="imgs/horse10.png" alt="Corredor entre os piquetes" loading="lazy"></button>
+      <button style="--s:5"><img src="imgs/horse8.png" alt="Cavalo no piquete" loading="lazy"></button>
+    </div>
+  </div>
+</section>
+
+<footer id="contato" class="contato">
+  <div class="sec-head" style="gap:40px;">
+    <h2 class="serif">Venha <em>conhecer</em>.</h2>
+    <div class="cta caps">
+      <!-- TODO: add real WhatsApp (https://wa.me/55...) and Instagram links -->
+      <a href="#">WhatsApp</a>
+      <a href="#">Instagram</a>
+    </div>
+  </div>
+  <div class="sec-head">
+    <img src="imgs/logo-light.png" alt="Haras Dom" style="width:120px;height:auto;display:block;">
+    <div class="foot-meta">
+      <span>Friesian · BH · © 2026</span>
+    </div>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <img alt="">
+  <span>Fechar ✕</span>
+</div>
+
+</div>
+
+<script>
+(function () {
+  // Opening animation
+  var hero = document.getElementById('hero');
+  var timers = [];
+  function play() {
+    timers.forEach(clearTimeout);
+    timers = [];
+    hero.classList.add('instant');
+    hero.classList.remove('p1', 'p2', 'p3', 'p4');
+    void hero.offsetWidth;
+    var at = function (ms, fn) { timers.push(setTimeout(fn, ms)); };
+    at(80, function () { hero.classList.remove('instant'); hero.classList.add('p1'); });
+    at(2300, function () { hero.classList.add('p2'); });
+    at(3700, function () { hero.classList.add('p3'); });
+    at(5000, function () { hero.classList.add('p4'); });
+  }
+  play();
+
+  // Lightbox
+  var lb = document.getElementById('lightbox');
+  var lbImg = lb.querySelector('img');
+  function open(img) {
+    lbImg.src = img.src;
+    lbImg.alt = img.alt;
+    lb.classList.add('open');
+  }
+
+  // Estrutura: auto-scrolling strip. It is a normal horizontal scroller, so it
+  // can also be scrolled by hand (trackpad, touch, or mouse drag). The figures
+  // are duplicated, and the position wraps by half the width to loop forever.
+  var strip = document.getElementById('strip');
+  var track = document.getElementById('track');
+  Array.prototype.slice.call(track.children).forEach(function (fig) {
+    var copy = fig.cloneNode(true);
+    copy.setAttribute('aria-hidden', 'true');
+    track.appendChild(copy);
+  });
+
+  var SPEED = 55; // px per second
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hovering = false, lbOpen = false, touching = false, resumeAt = 0;
+  var pos = 0, last = null;
+
+  function half() { return track.scrollWidth / 2; }
+  function wrap() {
+    var h = half();
+    if (h <= 0) return;
+    if (pos >= h) pos -= h;
+    if (pos < 0) pos += h;
+  }
+  function holdFor(ms) { resumeAt = performance.now() + ms; }
+
+  function tick(now) {
+    var dt = last === null ? 0 : Math.min(now - last, 100) / 1000;
+    last = now;
+    // Pick up any manual scrolling since the last frame.
+    if (Math.abs(strip.scrollLeft - Math.round(pos)) > 1) pos = strip.scrollLeft;
+    var paused = reduceMotion || hovering || lbOpen || touching || now < resumeAt;
+    if (!paused) pos += SPEED * dt;
+    wrap();
+    strip.scrollLeft = pos;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  strip.addEventListener('mouseenter', function () { hovering = true; });
+  strip.addEventListener('mouseleave', function () { hovering = false; });
+  strip.addEventListener('touchstart', function () { touching = true; }, { passive: true });
+  strip.addEventListener('touchend', function () { touching = false; holdFor(2000); });
+  strip.addEventListener('wheel', function () { holdFor(1500); }, { passive: true });
+
+  // Mouse drag to scroll; a drag doesn't count as a click on a photo.
+  var dragX = null, dragMoved = false;
+  strip.addEventListener('pointerdown', function (e) {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    dragX = e.clientX; dragMoved = false;
+  });
+  window.addEventListener('pointermove', function (e) {
+    if (dragX === null) return;
+    var dx = e.clientX - dragX;
+    if (!dragMoved && Math.abs(dx) < 5) return;
+    dragMoved = true;
+    strip.classList.add('dragging');
+    pos -= dx; wrap(); strip.scrollLeft = pos;
+    dragX = e.clientX;
+  });
+  window.addEventListener('pointerup', function () {
+    dragX = null;
+    strip.classList.remove('dragging');
+  });
+
+  track.querySelectorAll('figure').forEach(function (fig) {
+    fig.addEventListener('click', function () {
+      if (dragMoved) { dragMoved = false; return; }
+      lbOpen = true;
+      open(fig.querySelector('img'));
+    });
+  });
+
+  // Galeria
+  document.querySelectorAll('.mosaic button').forEach(function (btn) {
+    btn.addEventListener('click', function () { open(btn.querySelector('img')); });
+  });
+
+  function close() {
+    lb.classList.remove('open');
+    lbOpen = false;
+  }
+  lb.addEventListener('click', close);
+  window.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+})();
+</script>
+</body>
+</html>
