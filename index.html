@@ -31,10 +31,23 @@ a:hover{color:#C9A27A;}
 }
 .hero.p3 .hero-video{opacity:.62;transform:translateX(-50%) scale(1);}
 
+/* Fundo ambiente: cópia do mesmo vídeo esticada, desfocada e escurecida atrás do principal.
+   O arquivo é 16:9 com a cena vertical (9:16) no centro e faixas pretas nas laterais.
+   Altura = 16/9 da largura faz o "cover" recortar só essa faixa central, esticada na tela toda. */
+.hero-ambient{
+  position:absolute;left:0;top:50%;width:100%;height:calc(100vw * 16 / 9);object-fit:cover;
+  filter:grayscale(1) blur(40px) brightness(.9) contrast(1.1);
+  opacity:0;transform:translateY(-50%) scale(1.25);
+  transition:opacity 2.2s ease, transform 7s cubic-bezier(.2,.7,.2,1);
+  pointer-events:none;
+}
+.hero.p3 .hero-ambient{opacity:.85;transform:translateY(-50%) scale(1.15);}
+
 /* No celular (tela vertical), o vídeo vertical preenche tudo, sem fade */
 @media (max-aspect-ratio: 3/4){
   .hero-video{left:0;width:100%;transform:scale(1.14);-webkit-mask-image:none;mask-image:none;}
   .hero.p3 .hero-video{transform:scale(1);}
+  .hero-ambient{display:none;}
 }
 .hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,13,12,.55) 0%,rgba(14,13,12,0) 30%,rgba(14,13,12,0) 55%,rgba(14,13,12,.85) 100%);pointer-events:none;}
 
@@ -99,6 +112,7 @@ a:hover{color:#C9A27A;}
 <div class="page">
 
 <section class="hero instant" id="hero">
+  <video class="hero-ambient" src="imgs/My%20Movie%2021%20(1).mp4" autoplay muted loop playsinline aria-hidden="true" tabindex="-1"></video>
   <video class="hero-video" src="imgs/My%20Movie%2021%20(1).mp4" autoplay muted loop playsinline></video>
   <div class="hero-shade"></div>
 
@@ -235,6 +249,18 @@ a:hover{color:#C9A27A;}
     at(5000, function () { hero.classList.add('p4'); });
   }
   play();
+
+  // Mantém o fundo ambiente no mesmo quadro do vídeo principal
+  var heroVideo = hero.querySelector('.hero-video');
+  var ambient = hero.querySelector('.hero-ambient');
+  function syncAmbient() {
+    if (getComputedStyle(ambient).display === 'none') return;
+    if (Math.abs(ambient.currentTime - heroVideo.currentTime) > 0.15) ambient.currentTime = heroVideo.currentTime;
+    if (ambient.paused && !heroVideo.paused) ambient.play().catch(function () {});
+  }
+  heroVideo.addEventListener('playing', syncAmbient);
+  heroVideo.addEventListener('seeked', syncAmbient);
+  setInterval(syncAmbient, 2000);
 
   // Lightbox
   var lb = document.getElementById('lightbox');
