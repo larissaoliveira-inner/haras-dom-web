@@ -54,8 +54,16 @@ a:hover{color:#C9A27A;}
 .hero-nav{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:34px 4vw;z-index:3;opacity:0;pointer-events:none;transition:opacity 1.2s ease;}
 .hero-nav div{display:flex;gap:36px;}
 .hero.p4 .hero-nav{opacity:1;pointer-events:auto;}
+/* No celular o centro da tela cai em cima dos links: o logo vai para o meio do vão
+   entre "Galeria" e "Contato" (--logo-x é medido no script) */
+@media (max-width:700px){
+  .hero-nav{padding:34px 5vw;}
+  .hero-nav div{gap:22px;}
+  .hero-nav a{font-size:11px;letter-spacing:.22em;}
+  .hero.p3 .logo{left:var(--logo-x,50%);transform:translate(-50%,0) scale(.16);}
+}
 
-.logo{position:absolute;left:50%;top:50%;width:min(62vw,460px);aspect-ratio:316/228;transform:translate(-50%,-50%) scale(1);transform-origin:top center;z-index:4;transition:top 1.6s cubic-bezier(.7,0,.2,1), transform 1.6s cubic-bezier(.7,0,.2,1);}
+.logo{position:absolute;left:50%;top:50%;width:min(62vw,460px);aspect-ratio:316/228;transform:translate(-50%,-50%) scale(1);transform-origin:top center;z-index:4;transition:top 1.6s cubic-bezier(.7,0,.2,1), left 1.6s cubic-bezier(.7,0,.2,1), transform 1.6s cubic-bezier(.7,0,.2,1);}
 .hero.p3 .logo{top:26px;transform:translate(-50%,0) scale(.2);}
 .logo img{position:absolute;inset:0;width:100%;height:100%;}
 .logo .mono{clip-path:inset(0 100% 19% 0);transition:clip-path 2.1s cubic-bezier(.7,0,.2,1);}
@@ -235,6 +243,18 @@ a:hover{color:#C9A27A;}
     at(5000, function () { hero.classList.add('p4'); });
   }
   play();
+
+  // Centro do vão entre "Galeria" e "Contato", usado pelo logo no celular
+  var navGaleria = hero.querySelector('.hero-nav a[href="#galeria"]');
+  var navContato = hero.querySelector('.hero-nav a[href="#contato"]');
+  function placeLogo() {
+    var heroBox = hero.getBoundingClientRect();
+    var x = (navGaleria.getBoundingClientRect().right + navContato.getBoundingClientRect().left) / 2 - heroBox.left;
+    hero.style.setProperty('--logo-x', x + 'px');
+  }
+  placeLogo();
+  window.addEventListener('resize', placeLogo);
+  if (document.fonts) document.fonts.ready.then(placeLogo);
 
   // Mantém o fundo ambiente no mesmo quadro do vídeo principal
   var heroVideo = hero.querySelector('.hero-video');
