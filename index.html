@@ -67,7 +67,7 @@ a:hover{color:#C9A27A;}
 .hero.p2 .logo .pen{opacity:0;}
 
 /* Estrutura */
-.estrutura{background:#F3EFE7;color:#161412;padding:clamp(88px,10vw,160px) 0 clamp(40px,5vw,64px);display:flex;flex-direction:column;gap:32px;}
+.estrutura{background:#F3EFE7;color:#161412;padding:clamp(88px,10vw,160px) 0 clamp(80px,9vw,140px);display:flex;flex-direction:column;gap:32px;}
 .estrutura .sec-head h2{font-size:clamp(36px,4.2vw,68px);}
 .sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;}
 .sec-head h2{font-size:clamp(44px,6vw,96px);line-height:.9;}
@@ -78,10 +78,9 @@ a:hover{color:#C9A27A;}
 .track{display:flex;width:max-content;}
 .strip figure{margin:0 14px 0 0;flex:0 0 auto;height:min(64vh,620px);display:flex;flex-direction:column;gap:12px;cursor:zoom-in;}
 .strip img{height:100%;min-height:0;width:auto;display:block;}
-.strip figcaption{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#5E5850;}
 
 /* Galeria */
-.galeria{background:#0E0D0C;padding:clamp(56px,7vw,96px) 4vw;display:flex;flex-direction:column;gap:32px;}
+.galeria{background:#0E0D0C;padding:clamp(80px,9vw,140px) 4vw clamp(56px,7vw,96px);display:flex;flex-direction:column;gap:32px;}
 .hint{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#A39C91;}
 /* Every column has the same total height, so the top and bottom edges line up.
    Each photo's --s is its share of the column (all columns add up to 16). */
@@ -93,8 +92,7 @@ a:hover{color:#C9A27A;}
 @media (max-width:900px){ .mosaic{grid-template-columns:repeat(2,minmax(0,1fr));} }
 
 /* Contato */
-.contato{background:#0E0D0C;padding:clamp(40px,6vw,80px) 4vw 36px;display:flex;flex-direction:column;gap:56px;border-top:1px solid rgba(237,232,223,.18);}
-.contato h2{font-size:clamp(44px,6vw,104px);line-height:.95;max-width:10ch;}
+.contato{background:#0E0D0C;padding:clamp(40px,6vw,80px) 4vw 36px;display:flex;flex-direction:column;gap:36px;border-top:1px solid rgba(237,232,223,.18);}
 .cta{display:flex;flex-wrap:wrap;gap:14px;}
 .cta a{border:1px solid rgba(237,232,223,.4);padding:16px 26px;}
 .cta a:first-child{border-color:#EDE8DF;}
@@ -142,43 +140,34 @@ a:hover{color:#C9A27A;}
     <div class="track" id="track">
       <figure>
         <img src="imgs/espaco4.png" alt="Corredor das baias à noite">
-        <figcaption>Baias</figcaption>
       </figure>
       <figure>
         <img src="imgs/espaco.png" alt="Lounge sob o pergolado">
-        <figcaption>Convivência</figcaption>
       </figure>
       <figure>
         <img src="imgs/espaco5.png" alt="Cavalos no palanque">
-        <figcaption>Palanque</figcaption>
       </figure>
       <figure>
         <img src="imgs/espaco7.png" alt="Cocheiras iluminadas ao anoitecer">
-        <figcaption>Cocheiras</figcaption>
       </figure>
       <figure>
         <img src="imgs/espaco3.png" alt="Portas das baias com flores">
-        <figcaption>Jardins</figcaption>
       </figure>
       <figure>
         <img src="imgs/espaco6.png" alt="Mesa comunitária na varanda coberta">
-        <figcaption>Varanda</figcaption>
       </figure>
       <figure>
         <img src="imgs/espaco1.png" alt="Lounge com vista para os piquetes">
-        <figcaption>Vista</figcaption>
       </figure>
       <figure>
         <img src="imgs/espaco2.png" alt="Lounge ao entardecer">
-        <figcaption>Entardecer</figcaption>
       </figure>
     </div>
   </div>
 </section>
 
 <section id="galeria" class="galeria">
-  <div class="sec-head">
-    <h2 class="serif"><em>Galeria</em></h2>
+  <div class="sec-head" style="justify-content:flex-end;">
     <span class="hint">Clique para ampliar</span>
   </div>
   <div class="mosaic">
@@ -208,19 +197,16 @@ a:hover{color:#C9A27A;}
 </section>
 
 <footer id="contato" class="contato">
-  <div class="sec-head" style="gap:40px;">
-    <h2 class="serif">Venha <em>conhecer</em>.</h2>
+  <div class="sec-head" style="align-items:center;">
+    <img src="imgs/logo-light.png" alt="Haras Dom" style="width:120px;height:auto;display:block;">
     <div class="cta caps">
-      <!-- TODO: add real WhatsApp (https://wa.me/55...) and Instagram links -->
+      <!-- TODO: add real WhatsApp link (https://wa.me/55...) -->
       <a href="#">WhatsApp</a>
-      <a href="#">Instagram</a>
+      <a href="https://www.instagram.com/harasdom/" target="_blank" rel="noopener">Instagram</a>
     </div>
   </div>
-  <div class="sec-head">
-    <img src="imgs/logo-light.png" alt="Haras Dom" style="width:120px;height:auto;display:block;">
-    <div class="foot-meta">
-      <span>Friesian · BH · © 2026</span>
-    </div>
+  <div class="foot-meta">
+    <span>Friesian · BH · © 2026</span>
   </div>
 </footer>
 
