@@ -106,6 +106,12 @@ a:hover{color:#C9A27A;}
 .cta a:first-child{border-color:#EDE8DF;}
 .cta a:hover{background:#EDE8DF;color:#0E0D0C;}
 .foot-meta{display:flex;flex-wrap:wrap;gap:28px;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#A39C91;}
+/* No celular o rodapé fica centralizado */
+@media (max-width:700px){
+  .contato{align-items:center;text-align:center;}
+  .contato .sec-head{flex-direction:column;align-items:center;justify-content:center;}
+  .contato .cta,.contato .foot-meta{justify-content:center;}
+}
 
 /* Lightbox */
 .lightbox{position:fixed;inset:0;z-index:50;background:rgba(10,9,8,.96);display:none;align-items:center;justify-content:center;padding:5vh 5vw;cursor:zoom-out;}
